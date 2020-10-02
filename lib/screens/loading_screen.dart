@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:clima/services/location.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -10,28 +10,29 @@ class _LoadingScreenState extends State<LoadingScreen> {
   // We need async function because getting location is a time consuming task and
   // we want it to happen in the background, so that the UI does not crash
   void getLocation() async {
-    // Accuracy need not be high, because it drains battery.
-    // High accuracy is needed mainly for navigation purposes.
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.lowest);
-    print('Hello');
-    // We also need to permission to get access to the location from the user.
-    // Geolocator now does it automatically.
+    Location location = Location();
+    await location.getCurrentLocation();
+    location.printValues();
+  }
+
+  // A stateful widget has 3 states: initState(), build(), deactivate()
+  // initState() gets called only once whenever the stateful widget is created.
+  // build() gets called every time the widget is changed.
+  // deactivate() gets called only once at the end whenever the widget gets destroyed.
+
+  // We don't want to load the location every time. Its expensive. So to call it one when the app
+  // is loaded, we place it inside the build method.
+  @override
+  void initState() {
+    super.initState();
+    // An exception may occur if:
+    // 1. The user does not allow permission to get the location.
+    // 2. The GPS could not be detected.
+    getLocation();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: RaisedButton(
-          onPressed: () {
-            //Get the current location
-            print('Hello');
-            getLocation();
-          },
-          child: Text('Get Location'),
-        ),
-      ),
-    );
+    return Scaffold();
   }
 }

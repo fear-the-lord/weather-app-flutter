@@ -22,13 +22,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
     latitude = location.latitude;
     longitude = location.longitude;
 
+    // units = metric means we will get the result in celcius.
     NetworkHelper networkHelper = NetworkHelper(
-        'http://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
+        'http://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey&units=metric');
 
     var weatherData = await networkHelper.getData();
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return LocationScreen();
+      return LocationScreen(weatherData);
     }));
   }
 
